@@ -480,6 +480,14 @@ textarea { resize: vertical; }
 .credit-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
 .login .credit { position: relative; z-index: 1; margin-top: 16px; }
 
+button.credit { cursor: pointer; font-family: var(--mono); }
+.sheet-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(3, 6, 15, 0.7); display: grid; place-items: end center; padding: 12px; }
+.sheet-panel { width: min(560px, 100%); max-height: 82vh; overflow-y: auto; background: var(--card); border: 2px solid var(--line); border-radius: 18px; padding: 18px; box-shadow: 6px 6px 0 #03060f; display: grid; gap: 14px; }
+@media (min-width: 700px) { .sheet-backdrop { place-items: center; } }
+.release { border-top: 1px dashed var(--line); padding-top: 12px; display: grid; gap: 8px; }
+.release ul, .update-card ul { padding-left: 18px; display: grid; gap: 4px; font-size: 15px; }
+.update-card { border-color: var(--green); }
+
 /* ---------- Motion preference ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

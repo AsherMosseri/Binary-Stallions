@@ -4,6 +4,7 @@ import { MISSIONS } from '../data/season'
 import { MAX_ROBOT } from '../lib/scoring'
 import { trendOf } from '../lib/stats'
 import { firstName } from '../config'
+import UpdateCard from '../components/UpdateCard'
 
 export default function Home({ me, go }) {
   const settings = useDoc('settings/team')
@@ -21,6 +22,7 @@ export default function Home({ me, go }) {
 
   return (
     <div className="stack">
+      <UpdateCard />
       <section className="hero panel">
         <div className="tape">{settings?.qualifierName || 'Next qualifier'}</div>
         {days === null ? (
