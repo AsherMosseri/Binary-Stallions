@@ -1,6 +1,18 @@
 // Newest first. Add a new entry every time the version in package.json goes up.
 export const RELEASES = [
   {
+    version: '1.0.5',
+    date: '2026-11-18',
+    title: 'Polish and fixes',
+    items: [
+      'Tabs switch smoothly now, without the flicker or jump',
+      'Date pickers, dropdowns, and confirm prompts match the app instead of the iPad’s own popups',
+      'Mission total shows the full robot max of 530',
+      'Layouts centered and spaced properly on iPad and phone',
+      'Chat scrolls within the message list instead of the whole page',
+    ],
+  },
+  {
     version: '1.0.4',
     date: '2026-11-18',
     title: 'Team plan',

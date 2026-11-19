@@ -3,6 +3,7 @@ import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { useDoc } from '../lib/hooks'
 import { daysUntil } from '../lib/time'
+import { useConfirm, DateField } from '../components/Dialogs'
 
 export default function Admin({ me }) {
   if (!me.isAdmin) return <p className="muted">Coach only.</p>
@@ -53,7 +54,7 @@ function Settings({ me }) {
       <h2>Qualifier</h2>
       <div className="form-grid">
         <label className="field"><span>Event name</span><input value={name} onChange={(e) => setName(e.target.value)} placeholder="North Broward Qualifier" /></label>
-        <label className="field"><span>Date</span><input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></label>
+        <label className="field"><span>Date</span><DateField value={date} onChange={setDate} label="Qualifier date" /></label>
       </div>
       <p className="muted small">{days === null ? 'No date set yet.' : `${days} days from today.`}</p>
       <div className="row gap">
@@ -65,6 +66,7 @@ function Settings({ me }) {
 }
 
 function PlanEditor({ me }) {
+  const confirm = useConfirm()
   const plan = useDoc('settings/plan')
   const [scope, setScope] = useState('day')
   const [label, setLabel] = useState('')
@@ -98,7 +100,7 @@ function PlanEditor({ me }) {
   }
 
   async function clear() {
-    if (!window.confirm('Clear the plan from HQ?')) return
+    if (!(await confirm({ title: 'Clear the plan?', message: 'HQ will stop showing it.', danger: true, confirmLabel: 'Clear' }))) return
     setText('')
     await write([])
   }

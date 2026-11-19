@@ -4,6 +4,7 @@ import { auth } from '../firebase'
 import { ROSTER, emailFor } from '../config'
 import BinaryRain from '../components/BinaryRain'
 import Credit from '../components/Credit'
+import { Select } from '../components/Dialogs'
 import logo from '../assets/stallion.png'
 
 // Firebase verifies the password, so a wrong team code or PIN can't sign in.
@@ -59,15 +60,13 @@ export default function Login() {
 
         <label className="field">
           <span>Name</span>
-          <select value={name} onChange={(e) => setName(e.target.value)} required>
-            <option value="">Choose…</option>
-            {ROSTER.map((r) => (
-              <option key={r.name} value={r.name}>
-                {r.name}
-                {r.admin ? ' (coach)' : ''}
-              </option>
-            ))}
-          </select>
+          <Select
+            value={name}
+            onChange={setName}
+            label="Name"
+            placeholder="Choose your name"
+            options={ROSTER.map((r) => ({ v: r.name, label: r.admin ? `${r.name} (coach)` : r.name }))}
+          />
         </label>
 
         <label className="field">

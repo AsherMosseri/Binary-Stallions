@@ -3,6 +3,7 @@ import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { useCollection, useDoc } from '../lib/hooks'
 import { MISSIONS } from '../data/season'
+import { MAX_ROBOT } from '../lib/scoring'
 import { youtubeId } from '../lib/time'
 
 export default function Missions({ me }) {
@@ -12,7 +13,6 @@ export default function Missions({ me }) {
 
   const solid = MISSIONS.filter((m) => byId[m.id]?.done).length
   const potential = MISSIONS.filter((m) => byId[m.id]?.done).reduce((s, m) => s + m.max, 0)
-  const allMax = MISSIONS.reduce((s, m) => s + m.max, 0)
 
   return (
     <div className="stack">
@@ -24,7 +24,7 @@ export default function Missions({ me }) {
           </div>
           <div className="stamp">
             <strong>{solid}/{MISSIONS.length}</strong>
-            <span>{potential} of {allMax} pts solid</span>
+            <span>{potential} of {MAX_ROBOT} robot pts</span>
           </div>
         </div>
         <span className="bar big"><span style={{ width: `${(solid / MISSIONS.length) * 100}%` }} /></span>

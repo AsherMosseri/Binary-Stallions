@@ -4,10 +4,12 @@ import { db } from '../firebase'
 import { useCollection } from '../lib/hooks'
 import { MISSIONS } from '../data/season'
 import { todayIso, fmtDay, fmtTime } from '../lib/time'
+import { useConfirm, DateField } from '../components/Dialogs'
 
 const EXTRAS = ['Innovation Project', 'Robot Design', 'Attachments', 'Code', 'Practice run', 'Judging prep', 'Build', 'Outreach']
 
 export default function DailyLog({ me }) {
+  const confirm = useConfirm()
   const logs = useCollection('logs', { order: 'createdAt', n: 100 })
   const [date, setDate] = useState(todayIso())
   const [missions, setMissions] = useState([])
@@ -49,7 +51,7 @@ export default function DailyLog({ me }) {
   }
 
   async function remove(l) {
-    if (!window.confirm('Delete this entry?')) return
+    if (!(await confirm({ title: 'Delete this entry?', danger: true, confirmLabel: 'Delete' }))) return
     await deleteDoc(doc(db, 'logs', l.id))
   }
 
@@ -59,7 +61,7 @@ export default function DailyLog({ me }) {
         <h2>What did we do today?</h2>
         <label className="field">
           <span>Date</span>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <DateField value={date} onChange={setDate} label="Date" />
         </label>
 
         <p className="field-label">Missions we worked on</p>

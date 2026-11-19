@@ -3,6 +3,7 @@ import { addDoc, collection, deleteDoc, doc, serverTimestamp, setDoc } from 'fir
 import { db } from '../firebase'
 import { useCollection } from '../lib/hooks'
 import { fmtTime } from '../lib/time'
+import { useConfirm } from '../components/Dialogs'
 
 export default function Chat({ me }) {
   const [view, setView] = useState('team')
@@ -103,16 +104,18 @@ function AdminInbox({ me }) {
 }
 
 function Messages({ list, me, path, canDelete }) {
-  const endRef = useRef(null)
+  const confirm = useConfirm()
+  const listRef = useRef(null)
   useEffect(() => {
-    endRef.current?.scrollIntoView({ block: 'end' })
+    const el = listRef.current
+    if (el) el.scrollTop = el.scrollHeight
   }, [list?.length])
 
   if (!list) return <p className="muted pad">Loading…</p>
   if (list.length === 0) return <p className="muted pad">Quiet in here. Say something.</p>
 
   return (
-    <ol className="msgs">
+    <ol className="msgs" ref={listRef}>
       {list.map((m) => {
         const mine = m.uid === me.uid
         return (
@@ -124,7 +127,9 @@ function Messages({ list, me, path, canDelete }) {
               {canDelete(m) && (
                 <button
                   className="linkish danger"
-                  onClick={() => window.confirm('Delete this message?') && deleteDoc(doc(db, path, m.id))}
+                  onClick={async () => {
+                    if (await confirm({ title: 'Delete this message?', danger: true, confirmLabel: 'Delete' })) deleteDoc(doc(db, path, m.id))
+                  }}
                 >
                   delete
                 </button>

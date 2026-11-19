@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { signOut } from 'firebase/auth'
 import { auth } from '../firebase'
 import { TEAM_NAME, SEASON, firstName } from '../config'
@@ -35,13 +35,20 @@ export default function Shell({ me }) {
     return visible.some((t) => t.id === saved) ? saved : 'home'
   })
 
+  const [, startTransition] = useTransition()
+
+  // Switch tabs in a transition so the old page stays on screen until the new one is ready.
+  const choose = (id) => {
+    window.scrollTo({ top: 0 })
+    startTransition(() => setTab(id))
+  }
+
   useEffect(() => {
     try {
       localStorage.setItem('bs-tab', tab)
     } catch {
       /* private mode: fine */
     }
-    window.scrollTo(0, 0)
   }, [tab])
 
   const current = visible.find((t) => t.id === tab) ?? visible[0]
@@ -62,7 +69,7 @@ export default function Shell({ me }) {
             <button
               key={t.id}
               className={t.id === current.id ? 'nav active' : 'nav'}
-              onClick={() => setTab(t.id)}
+              onClick={() => choose(t.id)}
             >
               <span className="idx">{String(i + 1).padStart(2, '0')}</span>
               {t.label}
@@ -85,14 +92,14 @@ export default function Shell({ me }) {
         <button className="linkish" onClick={() => signOut(auth)}>Sign out</button>
       </header>
 
-      <main className="page" key={current.id}>
-        <Page me={me} go={setTab} />
+      <main className="page">
+        <Page me={me} go={choose} />
         <Credit />
       </main>
 
       <nav className="tabbar" aria-label="Main mobile">
         {visible.map((t) => (
-          <button key={t.id} className={t.id === current.id ? 'active' : ''} onClick={() => setTab(t.id)}>
+          <button key={t.id} className={t.id === current.id ? 'active' : ''} onClick={() => choose(t.id)}>
             {t.label}
           </button>
         ))}

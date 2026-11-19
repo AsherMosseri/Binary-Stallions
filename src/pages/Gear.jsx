@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { addDoc, collection, deleteDoc, doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { useCollection, useDoc } from '../lib/hooks'
+import { useConfirm } from '../components/Dialogs'
 import { MISSIONS } from '../data/season'
 
 const PRECHECK = [
@@ -51,6 +52,7 @@ export default function Gear({ me }) {
 }
 
 function PreMatch({ me }) {
+  const confirm = useConfirm()
   const pc = useDoc('precheck/current')
   const checks = pc?.checks ?? {}
   const done = PRECHECK.filter((_, i) => checks[i]).length
@@ -63,7 +65,7 @@ function PreMatch({ me }) {
     )
   }
   async function reset() {
-    if (!window.confirm('Clear the pre-match checklist?')) return
+    if (!(await confirm({ title: 'Clear the checklist?', message: 'Everyone will see it empty.', confirmLabel: 'Clear', danger: true }))) return
     await setDoc(doc(db, 'precheck', 'current'), { checks: {}, updatedBy: me.name, updatedAt: serverTimestamp() }, { merge: true })
   }
 
@@ -89,6 +91,7 @@ function PreMatch({ me }) {
 }
 
 function Attachments({ me }) {
+  const confirm = useConfirm()
   const { rows } = useCollection('attachments', { order: 'createdAt', dir: 'asc', n: 200 })
   const [name, setName] = useState('')
   const [bag, setBag] = useState('')
@@ -138,7 +141,9 @@ function Attachments({ me }) {
             <div className="row between small">
               {a.link ? <a href={a.link} target="_blank" rel="noreferrer">Photo ↗</a> : <span />}
               {(me.isAdmin || a.uid === me.uid) && (
-                <button className="linkish danger" onClick={() => window.confirm('Delete?') && deleteDoc(doc(db, 'attachments', a.id))}>Delete</button>
+                <button className="linkish danger" onClick={async () => {
+                  if (await confirm({ title: `Delete ${a.name}?`, danger: true, confirmLabel: 'Delete' })) deleteDoc(doc(db, 'attachments', a.id))
+                }}>Delete</button>
               )}
             </div>
           </li>

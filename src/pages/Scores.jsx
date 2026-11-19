@@ -6,6 +6,7 @@ import { MISSIONS, PRECISION_POINTS, EQUIPMENT_POINTS, GP_LEVELS } from '../data
 import { defaultValues, scoreRun, MAX_ROBOT } from '../lib/scoring'
 import { missionStats, trendOf } from '../lib/stats'
 import { todayIso, fmtDay } from '../lib/time'
+import { useConfirm, DateField } from '../components/Dialogs'
 
 export default function Scores({ me }) {
   const [view, setView] = useState('log')
@@ -77,7 +78,7 @@ function Scoresheet({ me, onSaved }) {
           </label>
           <label className="field">
             <span>Date</span>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <DateField value={date} onChange={setDate} label="Date" />
           </label>
         </div>
       </section>
@@ -204,6 +205,7 @@ function YesNo({ value, onChange }) {
 }
 
 function History({ me }) {
+  const confirm = useConfirm()
   const runs = useCollection('runs', { order: 'createdAt', dir: 'asc', n: 300 })
   const [filter, setFilter] = useState('all')
   const [open, setOpen] = useState(null)
@@ -217,7 +219,7 @@ function History({ me }) {
   const stats = missionStats(shown)
 
   async function remove(r) {
-    if (!window.confirm(`Delete “${r.label}” (${r.robot} pts)?`)) return
+    if (!(await confirm({ title: `Delete “${r.label}”?`, message: `${r.robot} pts comes off the chart.`, danger: true, confirmLabel: 'Delete' }))) return
     await deleteDoc(doc(db, 'runs', r.id))
   }
 

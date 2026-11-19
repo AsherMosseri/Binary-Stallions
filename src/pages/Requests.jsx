@@ -3,6 +3,7 @@ import { addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, serverTime
 import { db } from '../firebase'
 import { useCollection } from '../lib/hooks'
 import { fmtDay } from '../lib/time'
+import { useConfirm, Select } from '../components/Dialogs'
 
 const TYPES = [
   { v: 'feature', label: 'Feature' },
@@ -95,6 +96,7 @@ function RequestCard({ r, me }) {
   const status = STATUSES.find((s) => s.v === (r.status ?? 'open')) ?? STATUSES[0]
   const closed = status.v === 'done' || status.v === 'wont'
   const canDelete = me.isAdmin || r.uid === me.uid
+  const confirm = useConfirm()
 
   async function vote() {
     await updateDoc(doc(db, 'requests', r.id), { votes: voted ? arrayRemove(me.uid) : arrayUnion(me.uid) })
@@ -103,7 +105,7 @@ function RequestCard({ r, me }) {
     await updateDoc(doc(db, 'requests', r.id), { status: v, statusBy: me.name })
   }
   async function remove() {
-    if (window.confirm(`Delete “${r.title}”?`)) await deleteDoc(doc(db, 'requests', r.id))
+    if (await confirm({ title: `Delete “${r.title}”?`, danger: true, confirmLabel: 'Delete' })) await deleteDoc(doc(db, 'requests', r.id))
   }
 
   return (
@@ -122,9 +124,7 @@ function RequestCard({ r, me }) {
         <p className="muted small">{r.by} · {fmtDay(r.createdAt)}</p>
         {me.isAdmin ? (
           <div className="row wrap gap">
-            <select value={status.v} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
-              {STATUSES.map((s) => <option key={s.v} value={s.v}>{s.label}</option>)}
-            </select>
+            <Select value={status.v} onChange={setStatus} options={STATUSES} label="Status" />
             <button className="linkish danger" onClick={remove}>Delete</button>
           </div>
         ) : (
