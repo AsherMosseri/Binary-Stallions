@@ -279,6 +279,8 @@ function Project({ me, go, settings }) {
         {stage.id === 'communicate' && <Presentation project={project} me={me} go={go} />}
         {stage.id === 'create' && <Notes project={project} me={me} stageId="create" label="Build notes" placeholder="What you built, what broke, what you fixed" />}
       </section>
+
+      <Summary project={project} me={me} />
     </>
   )
 }
@@ -433,5 +435,87 @@ function Notes({ project, me, stageId, label, placeholder }) {
       <span>{label}</span>
       <textarea rows={4} value={value} placeholder={placeholder} onChange={(e) => setDraft(e.target.value)} onBlur={save} />
     </label>
+  )
+}
+
+const SUMMARY_FIELDS = [
+  { k: 'what', label: 'What our project is', kind: 'area', rows: 3, placeholder: 'A drain filter made from recycled bottles that keeps trash out of the lake' },
+  { k: 'did', label: 'What we did', kind: 'area', rows: 4, placeholder: 'Surveyed 30 people, tested three designs, doubled the opening after the ranger’s feedback' },
+  { k: 'docUrl', label: 'Google Doc link', kind: 'link', placeholder: 'https://docs.google.com/…' },
+  { k: 'canvaUrl', label: 'Canva link', kind: 'link', placeholder: 'https://www.canva.com/…' },
+]
+
+function Summary({ project, me }) {
+  const saved = project?.summary ?? {}
+  const [drafts, setDrafts] = useState({})
+  const [note, setNote] = useState('')
+
+  const valueOf = (k) => (k in drafts ? drafts[k] : saved[k] ?? '')
+  const clearDraft = (k) =>
+    setDrafts((d) => {
+      const next = { ...d }
+      delete next[k]
+      return next
+    })
+
+  async function commit(f) {
+    if (!(f.k in drafts)) return
+    const v = drafts[f.k].trim()
+    if (v === (saved[f.k] ?? '')) return clearDraft(f.k)
+    if (f.kind === 'link' && v && !/^https?:\/\//i.test(v)) {
+      return setNote(`${f.label} needs to start with https://`)
+    }
+    setNote('')
+    await setDoc(
+      doc(db, 'innovation', 'project'),
+      { summary: { [f.k]: v }, updatedBy: me.name, updatedAt: serverTimestamp() },
+      { merge: true }
+    )
+    clearDraft(f.k)
+  }
+
+  return (
+    <section className="panel">
+      <h2>Our project, in our words</h2>
+      <p className="muted small">
+        Anyone on the team can fill this in. For a doc or Canva link, set sharing to “Anyone with the link can view” so judges and coaches can open it.
+      </p>
+
+      {SUMMARY_FIELDS.map((f) => (
+        <label className="field" key={f.k}>
+          <span>{f.label}</span>
+          {f.kind === 'area' ? (
+            <textarea
+              rows={f.rows}
+              value={valueOf(f.k)}
+              placeholder={f.placeholder}
+              onChange={(e) => setDrafts((d) => ({ ...d, [f.k]: e.target.value }))}
+              onBlur={() => commit(f)}
+            />
+          ) : (
+            <input
+              inputMode="url"
+              value={valueOf(f.k)}
+              placeholder={f.placeholder}
+              onChange={(e) => setDrafts((d) => ({ ...d, [f.k]: e.target.value }))}
+              onBlur={() => commit(f)}
+              onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
+            />
+          )}
+        </label>
+      ))}
+
+      {note && <p className="error" role="alert">{note}</p>}
+
+      <div className="row wrap gap">
+        {saved.docUrl && (
+          <a className="btn btn-small" href={saved.docUrl} target="_blank" rel="noreferrer">Open the doc ↗</a>
+        )}
+        {saved.canvaUrl && (
+          <a className="btn btn-small" href={saved.canvaUrl} target="_blank" rel="noreferrer">Open the Canva ↗</a>
+        )}
+        {project?.updatedBy && <span className="muted small">Last edited by {firstName(project.updatedBy)}</span>}
+      </div>
+    </section>
   )
 }
