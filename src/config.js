@@ -15,6 +15,7 @@ export const ROSTER = [
   { name: 'Hridaan Patel' },
   { name: 'Arda Erbay' },
   { name: 'Sebastian Cordova Chain' },
+  { name: 'Bobby Mercer' },
 ]
 
 export const slugify = (s) =>
