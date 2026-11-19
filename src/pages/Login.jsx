@@ -3,6 +3,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 import { auth } from '../firebase'
 import { ROSTER, emailFor } from '../config'
 import BinaryRain from '../components/BinaryRain'
+import Credit from '../components/Credit'
 import logo from '../assets/stallion.png'
 
 // Firebase verifies the password, so a wrong team code or PIN can't sign in.
@@ -100,6 +101,7 @@ export default function Login() {
         </button>
         <p className="fine">Forgot your PIN? Ask Declan to remove your account in the Firebase console, then sign in again.</p>
       </form>
+      <Credit />
     </div>
   )
 }

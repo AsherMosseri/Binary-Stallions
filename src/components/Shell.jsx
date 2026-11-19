@@ -3,6 +3,7 @@ import { signOut } from 'firebase/auth'
 import { auth } from '../firebase'
 import { TEAM_NAME, SEASON, firstName } from '../config'
 import logo from '../assets/stallion.png'
+import Credit from './Credit'
 import Home from '../pages/Home'
 import Missions from '../pages/Missions'
 import Scores from '../pages/Scores'
@@ -84,6 +85,7 @@ export default function Shell({ me }) {
 
       <main className="page" key={current.id}>
         <Page me={me} go={setTab} />
+        <Credit />
       </main>
 
       <nav className="tabbar" aria-label="Main mobile">

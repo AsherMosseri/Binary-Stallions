@@ -470,6 +470,16 @@ textarea { resize: vertical; }
 .cards { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
 .mini-card { background: var(--card2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 6px; align-content: start; }
 
+/* ---------- Credit pill ---------- */
+.credit {
+  display: flex; align-items: center; gap: 8px; width: fit-content;
+  margin: 28px auto 0; padding: 6px 14px; border-radius: 999px;
+  background: var(--card); border: 2px solid var(--line); box-shadow: 3px 3px 0 #03060f;
+  font: 500 12px var(--mono); letter-spacing: 0.04em; color: var(--muted);
+}
+.credit-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+.login .credit { position: relative; z-index: 1; margin-top: 16px; }
+
 /* ---------- Motion preference ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
