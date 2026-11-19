@@ -1,6 +1,15 @@
 // Newest first. Add a new entry every time the version in package.json goes up.
 export const RELEASES = [
   {
+    version: '1.0.7',
+    date: '2026-11-18',
+    title: 'PIN resets',
+    items: [
+      'Coach can reset anyone’s PIN from the Admin tab',
+      'Coach tools list updated to match',
+    ],
+  },
+  {
     version: '1.0.6',
     date: '2026-11-18',
     title: 'Judging centering',

@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
-import { db } from '../firebase'
 import { useDoc } from '../lib/hooks'
+import { httpsCallable } from 'firebase/functions'
+import { db, functions } from '../firebase'
+import { ROSTER, emailFor, firstName } from '../config'
 import { daysUntil } from '../lib/time'
-import { useConfirm, DateField } from '../components/Dialogs'
+import { useConfirm, DateField, Select } from '../components/Dialogs'
 
 export default function Admin({ me }) {
   if (!me.isAdmin) return <p className="muted">Coach only.</p>
   return (
     <div className="stack">
+      <PinReset me={me} />
       <PlanEditor me={me} />
       <Settings me={me} />
       <section className="panel">
@@ -16,7 +19,6 @@ export default function Admin({ me }) {
         <ul className="bullets">
           <li>Delete any team message, log entry, run, or attachment from the tab it lives in.</li>
           <li>Read and answer private messages in Chat, under “Private inbox.”</li>
-          <li>Reset someone’s PIN: remove their account in Firebase → Authentication → Users. They can sign in again and pick a new PIN.</li>
         </ul>
       </section>
     </div>
@@ -125,6 +127,68 @@ function PlanEditor({ me }) {
         <button className="btn btn-primary">Post to HQ</button>
         <button type="button" className="linkish danger" onClick={clear}>Clear</button>
         {saved && <span className="good">{saved}</span>}
+      </div>
+    </form>
+  )
+}
+
+function PinReset() {
+  const confirm = useConfirm()
+  const people = ROSTER.filter((r) => !r.admin)
+  const [who, setWho] = useState('')
+  const [code, setCode] = useState('')
+  const [pin, setPin] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [status, setStatus] = useState(null)
+
+  async function reset(e) {
+    e.preventDefault()
+    setStatus(null)
+    if (!who) return setStatus({ ok: false, text: 'Pick a person.' })
+    if (code.trim().length < 3) return setStatus({ ok: false, text: 'Enter the team code.' })
+    if (!/^\d{4}$/.test(pin)) return setStatus({ ok: false, text: 'The new PIN is 4 digits.' })
+
+    const yes = await confirm({
+      title: `Reset ${firstName(who)}’s PIN?`,
+      message: `${firstName(who)} signs in with the new PIN next time. Their current PIN stops working.`,
+      confirmLabel: 'Reset PIN',
+      danger: true,
+    })
+    if (!yes) return
+
+    setBusy(true)
+    try {
+      await httpsCallable(functions, 'resetPin')({ email: emailFor(who), teamCode: code.trim(), pin })
+      setStatus({ ok: true, text: `${firstName(who)}’s PIN is reset. Tell them the new one.` })
+      setPin('')
+    } catch (err) {
+      setStatus({ ok: false, text: err.message || 'Something went wrong. Try again.' })
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <form className="panel" onSubmit={reset}>
+      <h2>Reset a PIN</h2>
+      <p className="muted small">Forgot a PIN? Pick the person, type the team code, and set a new 4-digit PIN for them.</p>
+      <div className="form-grid">
+        <div className="field">
+          <span>Person</span>
+          <Select value={who} onChange={setWho} label="Person" placeholder="Choose…" options={people.map((p) => ({ v: p.name, label: p.name }))} />
+        </div>
+        <label className="field">
+          <span>Team code</span>
+          <input type="password" autoComplete="off" value={code} onChange={(e) => setCode(e.target.value)} />
+        </label>
+        <label className="field">
+          <span>New PIN</span>
+          <input type="password" inputMode="numeric" autoComplete="off" maxLength={4} value={pin} onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))} placeholder="4 digits" />
+        </label>
+      </div>
+      {status && <p className={status.ok ? 'good' : 'error'} role="status">{status.text}</p>}
+      <div className="row">
+        <button className="btn btn-primary" disabled={busy}>{busy ? 'Resetting…' : 'Reset PIN'}</button>
       </div>
     </form>
   )
