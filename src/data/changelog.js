@@ -1,6 +1,15 @@
 // Newest first. Add a new entry every time the version in package.json goes up.
 export const RELEASES = [
   {
+    version: '1.0.4',
+    date: '2026-11-18',
+    title: 'Team plan',
+    items: [
+      'Coach can post what the team is doing today or this week in the Admin tab',
+      'The plan shows at the top of HQ',
+    ],
+  },
+  {
     version: '1.0.3',
     date: '2026-11-18',
     title: 'Requests',

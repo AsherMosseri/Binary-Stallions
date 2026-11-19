@@ -470,6 +470,12 @@ textarea { resize: vertical; }
 .cards { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
 .mini-card { background: var(--card2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 6px; align-content: start; }
 
+/* ---------- Plan ---------- */
+.plan-card { border-color: var(--amber); }
+.plan-items { list-style: none; padding: 0; display: grid; gap: 8px; }
+.plan-items li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start; font-size: 16px; }
+.plan-n { font: 700 12px var(--mono); display: grid; place-items: center; height: 26px; border-radius: 8px; background: var(--amber); color: #1a1300; }
+
 /* ---------- Requests ---------- */
 .request { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 12px; box-shadow: var(--shadow); }
 .request.closed { opacity: 0.6; }
