@@ -72,6 +72,16 @@ service cloud.firestore {
       allow read, write: if signedIn();
     }
 
+    // Feature requests and bug reports. Anyone can post and vote. Only the coach can change status.
+    // Authors can delete their own requests.
+    match /requests/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if isAdmin()
+        || (signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes']));
+      allow delete: if isAdmin() || resource.data.uid == request.auth.uid;
+    }
+
     // Everything else is denied by default.
   }
 }

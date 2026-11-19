@@ -12,6 +12,7 @@ import DailyLog from '../pages/DailyLog'
 import Chat from '../pages/Chat'
 import Judging from '../pages/Judging'
 import Gear from '../pages/Gear'
+import Requests from '../pages/Requests'
 import Admin from '../pages/Admin'
 
 const TABS = [
@@ -23,6 +24,7 @@ const TABS = [
   { id: 'chat', label: 'Chat', component: Chat },
   { id: 'judging', label: 'Judging', component: Judging },
   { id: 'gear', label: 'Gear', component: Gear },
+  { id: 'requests', label: 'Requests', component: Requests },
   { id: 'admin', label: 'Admin', component: Admin, adminOnly: true },
 ]
 
