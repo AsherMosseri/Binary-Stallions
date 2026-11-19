@@ -2,7 +2,7 @@
 export const RELEASES = [
   {
     version: '1.0.3',
-    date: '2026-11-19',
+    date: '2026-11-18',
     title: 'Requests',
     items: [
       'New Requests tab: send a feature, a bug, or an idea',
@@ -12,7 +12,7 @@ export const RELEASES = [
   },
   {
     version: '1.0.2',
-    date: '2026-11-19',
+    date: '2026-11-18',
     title: 'Update log',
     items: [
       'Update log: tap the version at the bottom to see every release',
@@ -21,7 +21,7 @@ export const RELEASES = [
   },
   {
     version: '1.0.1',
-    date: '2026-11-19',
+    date: '2026-11-18',
     title: 'Credit and version',
     items: [
       'Version number and creator credit at the bottom of the app',
