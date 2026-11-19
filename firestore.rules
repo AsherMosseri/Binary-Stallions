@@ -1,0 +1,77 @@
+rules_version = '2';
+
+// Paste this into Firebase Console → Firestore Database → Rules → Publish.
+// Everyone on the team is a signed-in user. Only Declan (the coach/admin account) can
+// read or delete other people's private messages.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() && request.auth.token.email == 'declan-breen@binarystallions.app';
+    }
+
+    // Team-wide settings (qualifier date/name). Only the coach can change them.
+    match /settings/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // Mission checkboxes and videos: everyone can update.
+    match /missions/{id} {
+      allow read, write: if signedIn();
+    }
+
+    // Robot runs and scores.
+    match /runs/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isAdmin() || resource.data.uid == request.auth.uid;
+    }
+
+    // Daily log.
+    match /logs/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isAdmin() || resource.data.uid == request.auth.uid;
+    }
+
+    // Team channel.
+    match /messages/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow delete: if isAdmin() || resource.data.uid == request.auth.uid;
+    }
+
+    // Private threads. Each kid has one thread (dms/<their uid>). Only that kid and Declan can see it.
+    match /dms/{uid} {
+      allow read, write: if signedIn() && (request.auth.uid == uid || isAdmin());
+
+      match /messages/{id} {
+        allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+        allow create: if signedIn()
+          && (request.auth.uid == uid || isAdmin())
+          && request.resource.data.uid == request.auth.uid;
+        allow delete: if isAdmin();
+      }
+    }
+
+    // Pre-match checklist: shared, everyone can tick.
+    match /precheck/{id} {
+      allow read, write: if signedIn();
+    }
+
+    // Attachments and code log: everyone can add. Anyone can delete, so tidy up together.
+    match /attachments/{id} {
+      allow read, write: if signedIn();
+    }
+    match /codeVersions/{id} {
+      allow read, write: if signedIn();
+    }
+
+    // Everything else is denied by default.
+  }
+}
