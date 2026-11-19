@@ -147,6 +147,8 @@ textarea { resize: vertical; }
 .chip small { font-size: 11px; color: var(--muted); margin-left: 2px; }
 .chip.on { background: var(--amber); border-color: var(--amber); color: #1a1300; }
 .chip.on small { color: #1a1300; }
+.chips.center { justify-content: center; }
+.center { text-align: center; }
 .chips.static .chip { pointer-events: none; border-color: var(--green); color: var(--green); }
 
 .tag { display: inline-block; font: 500 11px var(--mono); text-transform: uppercase; border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }

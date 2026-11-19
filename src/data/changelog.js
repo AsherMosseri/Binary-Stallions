@@ -1,6 +1,14 @@
 // Newest first. Add a new entry every time the version in package.json goes up.
 export const RELEASES = [
   {
+    version: '1.0.6',
+    date: '2026-11-18',
+    title: 'Judging centering',
+    items: [
+      'Core Values on the Judging tab are centered',
+    ],
+  },
+  {
     version: '1.0.5',
     date: '2026-11-18',
     title: 'Polish and fixes',

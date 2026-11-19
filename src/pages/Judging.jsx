@@ -80,10 +80,10 @@ export default function Judging() {
 
       <section className="panel">
         <h2>Core Values we show in everything</h2>
-        <div className="chips static">
+        <div className="chips static center">
           {CORE.map((c) => <span key={c} className="chip">{c}</span>)}
         </div>
-        <p className="muted small">
+        <p className="muted small center">
           Gracious Professionalism at the table scores 2, 3, or 4 for Core Values. It doesn’t change robot points.
         </p>
       </section>
