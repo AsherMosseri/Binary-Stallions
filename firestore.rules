@@ -82,6 +82,32 @@ service cloud.firestore {
       allow delete: if isAdmin() || resource.data.uid == request.auth.uid;
     }
 
+    // Innovation project: brainstorm ideas. Anyone can post and vote. Coach picks one.
+    match /ideas/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if isAdmin()
+        || (signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes']));
+      allow delete: if isAdmin() || resource.data.uid == request.auth.uid;
+    }
+
+    // Innovation project: team checklist, roles, notes (shared).
+    match /innovation/{id} {
+      allow read, write: if signedIn();
+    }
+
+    // Innovation project: research sources and feedback log.
+    match /research/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isAdmin() || resource.data.uid == request.auth.uid;
+    }
+    match /feedback/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isAdmin() || resource.data.uid == request.auth.uid;
+    }
+
     // Everything else is denied by default.
   }
 }

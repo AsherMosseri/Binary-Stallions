@@ -1,6 +1,16 @@
 // Newest first. Add a new entry every time the version in package.json goes up.
 export const RELEASES = [
   {
+    version: '1.0.9',
+    date: '2026-11-18',
+    title: 'Innovation Project',
+    items: [
+      'New Innovation tab: brainstorm ideas, vote, and the coach picks one',
+      'Five stages with checklists and examples: Identify, Design, Create, Iterate, Communicate',
+      'Research sources, team roles, feedback log, and presentation notes',
+    ],
+  },
+  {
     version: '1.0.8',
     date: '2026-11-18',
     title: 'Pick your own PIN',

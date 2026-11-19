@@ -491,6 +491,25 @@ textarea { resize: vertical; }
 .vote.on b { color: var(--green); }
 .tag.bug { border-color: var(--red); color: var(--red); }
 
+/* ---------- Innovation ---------- */
+.idea { display: grid; grid-template-columns: auto 1fr; gap: 12px; background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 12px; box-shadow: var(--shadow); }
+.idea h3 { font-size: 16px; margin: 4px 0; }
+.idea p { white-space: pre-wrap; word-break: break-word; }
+.idea-body { display: grid; gap: 4px; min-width: 0; align-content: start; }
+.btn-small { min-height: 36px; padding: 6px 12px; font-size: 14px; }
+.tip { font-family: var(--display); font-size: 20px; line-height: 1.25; color: var(--amber); text-transform: none; }
+.stepper { list-style: none; padding: 0; margin: 4px 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.step { width: 100%; min-height: 56px; display: grid; justify-items: center; gap: 4px; padding: 6px 4px; border-radius: 12px; border: 2px solid var(--line); background: var(--bg2); color: var(--muted); font: 700 11px var(--mono); text-transform: uppercase; cursor: pointer; }
+.step-n { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); font: 700 12px var(--mono); color: var(--ink); }
+.step.done { color: var(--green); border-color: var(--green); }
+.step.done .step-n { background: var(--green); border-color: var(--green); color: #04110a; }
+.step.on { color: var(--ink); border-color: var(--amber); background: var(--card2); }
+.step.on .step-n { background: var(--amber); border-color: var(--amber); color: #1a1300; }
+.example { background: rgba(141, 255, 181, 0.07); border-left: 3px solid var(--green); padding: 8px 10px; border-radius: 6px; }
+.sub-card { display: grid; gap: 12px; border-top: 2px dashed var(--line); padding-top: 14px; }
+.sub-card h3 { font-size: 16px; }
+@media (max-width: 480px) { .stepper { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; } .step { font-size: 9px; min-height: 52px; } }
+
 /* ---------- Credit pill ---------- */
 .credit {
   display: flex; align-items: center; gap: 8px; width: fit-content;
