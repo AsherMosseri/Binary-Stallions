@@ -5,7 +5,7 @@ export const RELEASES = [
     date: '2026-11-18',
     title: 'Judging centering',
     items: [
-      'Core Values on the Judging tab are centered',
+      'Text in the Core Values pills on the Judging tab sits in the middle of each pill',
     ],
   },
   {

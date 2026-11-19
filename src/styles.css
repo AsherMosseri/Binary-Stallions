@@ -140,6 +140,7 @@ textarea { resize: vertical; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px; line-height: 1;
   min-width: 44px; min-height: 40px; padding: 0 12px; border-radius: 999px;
   border: 2px solid var(--line); background: transparent; color: var(--ink);
   font: 700 14px var(--mono); cursor: pointer;
@@ -147,8 +148,6 @@ textarea { resize: vertical; }
 .chip small { font-size: 11px; color: var(--muted); margin-left: 2px; }
 .chip.on { background: var(--amber); border-color: var(--amber); color: #1a1300; }
 .chip.on small { color: #1a1300; }
-.chips.center { justify-content: center; }
-.center { text-align: center; }
 .chips.static .chip { pointer-events: none; border-color: var(--green); color: var(--green); }
 
 .tag { display: inline-block; font: 500 11px var(--mono); text-transform: uppercase; border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
