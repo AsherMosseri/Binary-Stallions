@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../firebase'
+import { httpsCallable } from 'firebase/functions'
+import { auth, functions } from '../firebase'
 import { ROSTER, emailFor } from '../config'
 import BinaryRain from '../components/BinaryRain'
 import Credit from '../components/Credit'
@@ -34,6 +35,21 @@ export default function Login() {
         setBusy(false)
         return setError(friendly(err))
       }
+
+      // A coach may have cleared this PIN. If so, the PIN typed here becomes the new one.
+      try {
+        const { data } = await httpsCallable(functions, 'pinResetPending')({ email })
+        if (data.pending) {
+          await httpsCallable(functions, 'setNewPin')({ email, teamCode: code.trim(), pin })
+          await signInWithEmailAndPassword(auth, email, password)
+          setBusy(false)
+          return
+        }
+      } catch (resetErr) {
+        setBusy(false)
+        return setError(resetErr.message || friendly(resetErr))
+      }
+
       try {
         await createUserWithEmailAndPassword(auth, email, password)
       } catch (err2) {
@@ -55,7 +71,7 @@ export default function Login() {
         <div className="tape">Team check-in</div>
         <h1>Who’s at the table?</h1>
         <p className="muted">
-          First time here? Pick your name, type the team code, and make up a 4-digit PIN. Next time, use the same three things.
+          First time here? Pick your name, type the team code, and make up a 4-digit PIN. Next time, use the same three things. If your coach cleared your PIN, just pick a new one here.
         </p>
 
         <label className="field">
